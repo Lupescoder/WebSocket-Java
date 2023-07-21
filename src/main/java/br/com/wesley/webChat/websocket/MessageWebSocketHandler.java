@@ -33,6 +33,10 @@ public class MessageWebSocketHandler extends TextWebSocketHandler implements Web
         sessions.add(session);
         Usuario usuario = new Usuario(session.getId(), "Usuario:"+session.getId());
         usuarioList.put(session.getId(),usuario);
+
+        String sessionIdMessage = "sessionId:" + session.getId();
+        session.sendMessage(new TextMessage(sessionIdMessage));
+
         System.out.println("Conexão Nova Estabelicida : " + usuario);
     }
 
