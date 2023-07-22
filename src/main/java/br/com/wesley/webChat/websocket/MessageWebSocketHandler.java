@@ -33,10 +33,6 @@ public class MessageWebSocketHandler extends TextWebSocketHandler implements Web
         sessions.add(session);
         Usuario usuario = new Usuario(session.getId(), "Usuario:"+session.getId());
         usuarioList.put(session.getId(),usuario);
-
-        String sessionIdMessage = "sessionId:" + session.getId();
-        session.sendMessage(new TextMessage(sessionIdMessage));
-
         System.out.println("Conexão Nova Estabelicida : " + usuario);
     }
 
@@ -44,16 +40,21 @@ public class MessageWebSocketHandler extends TextWebSocketHandler implements Web
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 
         String payload = message.getPayload();
+        String senderSession = session.getId();
         System.out.println("Mensagem recebida: " + payload);
 
         for (WebSocketSession s : sessions) {
-            if (s.isOpen()) {
+            if (s.isOpen() && s.getId().equals(senderSession)) {
                 try {
-                    s.sendMessage(message);
-                    usuarioList.get(s.getId()).setMensagem(payload);
+                    session.sendMessage(new TextMessage("Enviada:"+ payload));
+                    usuarioList.get(session.getId()).setMensagem(payload);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }else{
+
+                s.sendMessage(message);
+                usuarioList.get(s.getId()).setListaDeMensagensRecebidas(payload);
             }
         }
 

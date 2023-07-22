@@ -31,4 +31,10 @@ public class UsuariosController {
         return usuario;
     }
 
+    @GetMapping("listar")
+    public Map<String, Usuario> listarUsuarios (){
+        Map<String, Usuario> listaDeUsuarios =  webSocketHandler.getUsuarioList();
+        return listaDeUsuarios;
+    }
+
 }
